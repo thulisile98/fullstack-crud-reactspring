@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios  from 'axios';
+import { Link, useParams } from 'react-router-dom';
 
 export default function Home() {
 
     const [users,setUsers]=useState([]);
 
+    const {id} = useParams();
     useEffect(()=>{
     loadUsers();
     },[]);
@@ -13,6 +15,13 @@ export default function Home() {
         const result =await axios.get("http://localhost:8080/users");
         setUsers(result.data);
     }
+     
+  const handleDelete = async(id)=>{
+    
+        await axios.delete(`http://localhost:8080/user/${id}`)
+        loadUsers()
+  }
+
 
   return (
     <div className="container">
@@ -34,9 +43,9 @@ export default function Home() {
         <td>{user.name}</td>
         <td>{user.username}</td>
         <td>{user.email}</td>
-        <td> <button className="btn btn-primary mx-2">View</button></td>
-        <td> <button className="btn btn-outline-primary mx-2">Edit</button></td>
-        <td> <button className="btn btn-danger mx-2">Delete</button></td>
+        <td> <Link to={`/viewuser/${user.id}`} className="btn btn-primary mx-2">View</Link></td>
+        <td> <Link className="btn btn-outline-primary mx-2" to={`/edituser/${user.id}`}>Edit</Link></td>
+        <td> <button onClick={()=>handleDelete(user.id)} className="btn btn-danger mx-2">Delete</button></td>
       </tr>
 
     ))
